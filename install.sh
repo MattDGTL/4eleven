@@ -15,7 +15,7 @@
 # =============================================================================
 set -euo pipefail
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 REPO_RAW="${REPO_RAW:-https://raw.githubusercontent.com/MattDGTL/4eleven/main}"
 
 # ---- configurable defaults (env can override) ----
@@ -27,6 +27,7 @@ OPEN_FIREWALL="${OPEN_FIREWALL:-0}"
 AUTO_PYTHON="${AUTO_PYTHON:-1}"
 WANT_SERVICE=1
 UNINSTALL=0
+PORT_SET=0; HOST_SET=0; PASSWORD_SET=0   # track explicit CLI flags
 
 # ---- helpers ----
 log()  { echo -e "\033[1;36m[4eleven]\033[0m $*"; }
@@ -64,9 +65,9 @@ EOF
 # ---- argument parsing ----
 while [ $# -gt 0 ]; do
   case "$1" in
-    --port) PORT="$2"; shift 2 ;;
-    --host) HOST="$2"; shift 2 ;;
-    --password) PASSWORD="$2"; shift 2 ;;
+    --port) PORT="$2"; PORT_SET=1; shift 2 ;;
+    --host) HOST="$2"; HOST_SET=1; shift 2 ;;
+    --password) PASSWORD="$2"; PASSWORD_SET=1; shift 2 ;;
     --prefix) DEST="$2"; shift 2 ;;
     --no-service) WANT_SERVICE=0; shift ;;
     --open-firewall) OPEN_FIREWALL=1; shift ;;
@@ -169,8 +170,17 @@ EOF
 chmod 0755 "$DEST_DIR/uninstall.sh"
 
 # =============================================================================
-# CONFIG
+# CONFIG  (upgrade-friendly: inherit unspecified settings from existing config)
 # =============================================================================
+if [ -f "$CONF_FILE" ]; then
+  OLD="$(sed -n 's/^4ELEVEN_PORT=//p' "$CONF_FILE" | tail -1)"
+  if [ "$PORT_SET" = 0 ] && [ -n "$OLD" ]; then PORT="$OLD"; fi
+  OLD="$(sed -n 's/^4ELEVEN_HOST=//p' "$CONF_FILE" | tail -1)"
+  if [ "$HOST_SET" = 0 ] && [ -n "$OLD" ]; then HOST="$OLD"; fi
+  OLD="$(sed -n 's/^4ELEVEN_PASSWORD=//p' "$CONF_FILE" | tail -1)"
+  if [ "$PASSWORD_SET" = 0 ] && [ -n "$OLD" ]; then PASSWORD="$OLD"; fi
+  log "existing config found — inheriting from $CONF_FILE (explicit flags override)"
+fi
 mkdir -p "$(dirname "$CONF_FILE")"
 cat > "$CONF_FILE" <<EOF
 # 4eleven configuration (generated $(date -u +%Y-%m-%dT%H:%M:%SZ))

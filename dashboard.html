@@ -261,7 +261,7 @@ html[data-theme="8bit"] .card-head h3 { letter-spacing: 1px; }
 .net-hero .flow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .flow .dir { border: 1px solid var(--border); border-radius: calc(var(--radius) * .6); padding: 10px 12px; background: var(--tile); }
 .flow .dir span { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-.flow .dir b { display: block; font-family: var(--mono); font-size: 19px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.flow .dir b { display: block; font-family: var(--mono); font-size: 19px; margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .flow .dir.dn b { color: var(--accent); }
 .flow .dir.up b { color: var(--accent2); }
 
@@ -278,6 +278,8 @@ html[data-theme="cartoon"] .sec-title::before, html[data-theme="8bit"] .sec-titl
 html[data-theme="8bit"] .tile { border-radius: 0; }
 .tile span { display: block; font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
 .tile b { font-family: var(--mono); font-size: 12.5px; font-weight: 600; word-break: break-all; line-height: 1.35; }
+.tile.wide { grid-column: 1 / -1; }
+.tile.wide b { font-size: 11.5px; letter-spacing: .3px; }
 
 /* detail rows */
 .detail { display: flex; justify-content: space-between; gap: 14px; padding: 8px 2px; border-bottom: 1px dashed var(--border); font-size: 13px; }
@@ -574,11 +576,12 @@ let offline = false;
 /* ================= formatting ================= */
 const fmtBytes = (n) => {
   if (n == null || isNaN(n)) return "—";
-  if (n < 1024) return n + " B";
-  const u = ["KB", "MB", "GB", "TB", "PB"];
+  if (n < 1024) return Math.round(n) + " B";
+  const u = ["KiB", "MiB", "GiB", "TiB", "PiB"];
   let i = -1;
   do { n /= 1024; i++; } while (n >= 1024 && i < u.length - 1);
-  return n.toFixed(n >= 100 ? 0 : 1) + " " + u[i];
+  const s = n < 10 ? n.toFixed(2) : n < 100 ? n.toFixed(1) : n.toFixed(0);
+  return s + " " + u[i];
 };
 const fmtRate = (n) => (n == null ? "—" : fmtBytes(n) + "/s");
 const fmtUptime = (s) => {
@@ -689,6 +692,7 @@ function renderStatic() {
   for (const [k, v] of tiles) {
     const el = document.createElement("div");
     el.className = "tile";
+    if (typeof v === "string" && v.length > 26) { el.classList.add("wide"); el.title = v; }
     const span = document.createElement("span"); span.textContent = k;
     const b = document.createElement("b"); b.textContent = v;
     el.append(span, b);
@@ -745,7 +749,7 @@ function renderStatic() {
   $("disks-tbody").innerHTML = "";
   for (const d of s.disks) {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${d.name}</td><td>${d.model}</td><td class="num">${d.size_gb} GB</td><td><span class="badge">${d.type}</span></td>`;
+    tr.innerHTML = `<td>${d.name}</td><td>${d.model}</td><td class="num">${fmtBytes(d.size_gb * 1e9)}</td><td><span class="badge">${d.type}</span></td>`;
     $("disks-tbody").appendChild(tr);
   }
 
