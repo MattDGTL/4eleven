@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4eleven — Server Information</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+/* ============================================================
+   4eleven (411) — the information line
+   Zero-dependency dashboard. Themes via CSS custom properties.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+/* ---------------- themes ---------------- */
+html[data-theme="dark"] {
+  --bg: #070b14;
+  --glow1: rgba(34, 211, 238, .16);
+  --glow2: rgba(129, 140, 248, .13);
+  --card: rgba(17, 24, 39, .72);
+  --card-solid: #111827;
+  --tile: rgba(148, 163, 184, .07);
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #22d3ee;
+  --accent2: #818cf8;
+  --good: #34d399;
+  --warn: #fbbf24;
+  --bad: #f87171;
+  --border: rgba(148, 163, 184, .16);
+  --shadow: 0 12px 32px rgba(0, 0, 0, .45);
+  --radius: 16px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+html[data-theme="light"] {
+  --bg: #eef1f7;
+  --glow1: rgba(79, 70, 229, .12);
+  --glow2: rgba(14, 165, 233, .12);
+  --card: #ffffff;
+  --card-solid: #ffffff;
+  --tile: rgba(15, 23, 42, .04);
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #4f46e5;
+  --accent2: #0ea5e9;
+  --good: #059669;
+  --warn: #d97706;
+  --bad: #dc2626;
+  --border: #e2e8f0;
+  --shadow: 0 8px 24px rgba(15, 23, 42, .09);
+  --radius: 16px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  color-scheme: light;
+}
+html[data-theme="cartoon"] {
+  --bg: #ffe8b3;
+  --glow1: rgba(255, 93, 143, .35);
+  --glow2: rgba(107, 203, 119, .35);
+  --card: #fffdf3;
+  --card-solid: #fffdf3;
+  --tile: rgba(43, 43, 43, .06);
+  --text: #263238;
+  --muted: #7a6f5c;
+  --accent: #ff5d8f;
+  --accent2: #ffb703;
+  --good: #43aa8b;
+  --warn: #f4a261;
+  --bad: #e63946;
+  --border: #2b2b2b;
+  --shadow: 6px 6px 0 #2b2b2b;
+  --radius: 18px;
+  --font: "Comic Sans MS", "Chalkboard SE", "Comic Neue", "Segoe Print", cursive;
+  --mono: "Comic Sans MS", "Chalkboard SE", monospace;
+  color-scheme: light;
+}
+html[data-theme="futuristic"] {
+  --bg: #01070d;
+  --glow1: rgba(0, 255, 159, .10);
+  --glow2: rgba(0, 217, 255, .10);
+  --card: rgba(3, 17, 28, .88);
+  --card-solid: #03111c;
+  --tile: rgba(0, 255, 159, .05);
+  --text: #d9fbe9;
+  --muted: #4f8f7d;
+  --accent: #00ff9f;
+  --accent2: #00d9ff;
+  --good: #00ff9f;
+  --warn: #ffd166;
+  --bad: #ff4d6d;
+  --border: rgba(0, 255, 159, .30);
+  --shadow: 0 0 26px rgba(0, 255, 159, .12), inset 0 0 22px rgba(0, 255, 159, .05);
+  --radius: 4px;
+  --font: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+html[data-theme="8bit"] {
+  --bg: #1a1c2c;
+  --glow1: rgba(255, 205, 117, .09);
+  --glow2: rgba(65, 166, 246, .09);
+  --card: #22263a;
+  --card-solid: #22263a;
+  --tile: rgba(244, 244, 244, .05);
+  --text: #f4f4f4;
+  --muted: #9aa0b4;
+  --accent: #ffcd75;
+  --accent2: #41a6f6;
+  --good: #38b764;
+  --warn: #ef7d57;
+  --bad: #b13e53;
+  --border: #0d0e18;
+  --shadow: 6px 6px 0 #000;
+  --radius: 0;
+  --font: "Courier New", "Lucida Console", monospace;
+  --mono: "Courier New", "Lucida Console", monospace;
+  color-scheme: dark;
+}
+
+/* ---------------- base layout ---------------- */
+body {
+  font-family: var(--font);
+  background:
+    radial-gradient(900px 500px at 12% -10%, var(--glow1), transparent 60%),
+    radial-gradient(900px 500px at 90% 110%, var(--glow2), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background .3s, color .3s;
+}
+html[data-theme="futuristic"] body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(rgba(0, 255, 159, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 159, .045) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+html[data-theme="futuristic"] body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: .35;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 1px, transparent 1px 3px);
+}
+html[data-theme="8bit"] body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .018) 0 2px, transparent 2px 4px);
+}
+html[data-theme="cartoon"] body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(90px 90px at 8% 12%, rgba(255, 93, 143, .18), transparent 70%),
+    radial-gradient(120px 120px at 92% 18%, rgba(255, 183, 3, .22), transparent 70%),
+    radial-gradient(100px 100px at 15% 85%, rgba(107, 203, 119, .20), transparent 70%),
+    radial-gradient(130px 130px at 88% 90%, rgba(0, 180, 216, .20), transparent 70%);
+}
+
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px;
+  padding: 12px 22px;
+  background: color-mix(in srgb, var(--card-solid) 78%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  transition: background .3s;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo {
+  width: 44px; height: 44px; flex: none;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border-radius: calc(var(--radius) * .8);
+  font-family: var(--mono); font-weight: 900; font-size: 19px; letter-spacing: -1px;
+  box-shadow: var(--shadow);
+  transition: transform .2s;
+}
+.logo:hover { transform: rotate(-6deg) scale(1.05); }
+html[data-theme="cartoon"] .logo { border: 3px solid #2b2b2b; box-shadow: 4px 4px 0 #2b2b2b; }
+html[data-theme="8bit"] .logo { border: 3px solid #000; box-shadow: 4px 4px 0 #000; border-radius: 0; }
+.brand h1 { margin: 0; font-size: 19px; letter-spacing: 6px; font-weight: 800; }
+html[data-theme="8bit"] .brand h1, html[data-theme="futuristic"] .brand h1 { letter-spacing: 4px; }
+.brand .tagline {
+  font-size: 10px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase;
+  margin-top: 2px;
+}
+.host-clock { margin-left: auto; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.hostname { font-family: var(--mono); font-size: 15px; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.clock { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1; }
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 8px var(--good); animation: pulse 1.6s infinite; }
+.live-dot.off { background: var(--bad); box-shadow: 0 0 8px var(--bad); animation: none; }
+.live-dot.idle { background: var(--muted); box-shadow: none; animation: none; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+.themes { display: flex; gap: 8px; flex-wrap: wrap; }
+.tbtn {
+  border: 1px solid var(--border); background: var(--tile); color: var(--text);
+  padding: 7px 12px; border-radius: 999px; cursor: pointer;
+  font-size: 12px; font-weight: 600; font-family: var(--font);
+  transition: all .18s; display: inline-flex; align-items: center; gap: 5px;
+}
+.tbtn:hover { transform: translateY(-2px); }
+.tbtn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border-color: transparent;
+}
+html[data-theme="cartoon"] .tbtn { border: 2.5px solid #2b2b2b; box-shadow: 3px 3px 0 #2b2b2b; border-radius: 12px; }
+html[data-theme="8bit"] .tbtn { border: 3px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 0; text-transform: uppercase; letter-spacing: 1px; }
+html[data-theme="8bit"] .tbtn.active, html[data-theme="cartoon"] .tbtn.active { box-shadow: 1px 1px 0 #000; transform: translate(2px, 2px); }
+
+main { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 22px; display: flex; flex-direction: column; gap: 20px; }
+
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); backdrop-filter: blur(10px);
+  transition: box-shadow .25s, transform .25s;
+}
+html[data-theme="cartoon"] .card { border: 3px solid #2b2b2b; box-shadow: 6px 6px 0 #2b2b2b; }
+html[data-theme="8bit"] .card { border: 4px solid #000; box-shadow: 6px 6px 0 #000; background: repeating-linear-gradient(0deg, #22263a 0 24px, #20243a 24px 28px); }
+html[data-theme="8bit"] .card, html[data-theme="8bit"] .tile, html[data-theme="8bit"] .chip,
+html[data-theme="8bit"] .badge, html[data-theme="8bit"] .iface, html[data-theme="8bit"] .storage-card,
+html[data-theme="8bit"] .logo, html[data-theme="8bit"] .copy-btn, html[data-theme="8bit"] .flow .dir,
+html[data-theme="8bit"] .ring-wrap svg, html[data-theme="8bit"] .qr-wrap img { border-radius: 0; }
+html[data-theme="8bit"] .bar-fill { background: repeating-linear-gradient(90deg, var(--accent) 0 6px, var(--accent2) 6px 12px); }
+html[data-theme="8bit"] .ring-fg { filter: none; }
+html[data-theme="8bit"] h1, html[data-theme="8bit"] h3, html[data-theme="8bit"] .brand .tagline { text-shadow: 2px 2px 0 #000; }
+html[data-theme="8bit"] .tbtn.active { background: var(--accent); color: #1a1c2c; }
+html[data-theme="8bit"] .tbtn { border: 3px solid #000; box-shadow: 3px 3px 0 #000; border-radius: 0; text-transform: uppercase; letter-spacing: 1px; }
+html[data-theme="cartoon"] .card:hover, html[data-theme="8bit"] .card:hover { transform: translate(-2px, -2px); }
+html[data-theme="futuristic"] .card { background: rgba(3, 17, 28, .92); border: 1px solid rgba(0, 255, 159, .35); }
+
+.card-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+.card-head h3 { margin: 0; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+.card-head .sub { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 45%; }
+html[data-theme="8bit"] .card-head h3 { letter-spacing: 1px; }
+
+/* hero cards */
+.hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.hero-body { display: flex; gap: 18px; align-items: center; }
+.ring-wrap { position: relative; width: 118px; height: 118px; flex: none; }
+.ring-wrap svg { width: 100%; height: 100%; }
+.ring-bg { stroke: var(--border); }
+.ring-fg {
+  stroke: var(--accent); stroke-linecap: round;
+  transform: rotate(-90deg); transform-origin: center;
+  transition: stroke-dashoffset .8s ease, stroke .4s;
+  filter: drop-shadow(0 0 5px var(--accent));
+}
+.ring-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.ring-center b { font-family: var(--mono); font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; }
+.ring-center small { color: var(--muted); font-size: 11px; letter-spacing: 1px; }
+.hero-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.stat-row { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--muted); }
+.stat-row b { color: var(--text); font-family: var(--mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+.spark { width: 100%; height: 42px; margin-top: 4px; display: block; }
+.net-hero { display: flex; flex-direction: column; gap: 12px; }
+.net-hero .flow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.flow .dir { border: 1px solid var(--border); border-radius: calc(var(--radius) * .6); padding: 10px 12px; background: var(--tile); }
+.flow .dir span { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.flow .dir b { display: block; font-family: var(--mono); font-size: 19px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.flow .dir.dn b { color: var(--accent); }
+.flow .dir.up b { color: var(--accent2); }
+
+/* grid sections */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
+.sec-title { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; }
+.sec-title::before { content: ""; width: 4px; height: 16px; border-radius: 2px; background: linear-gradient(180deg, var(--accent), var(--accent2)); }
+html[data-theme="8bit"] .sec-title::before { border-radius: 0; }
+html[data-theme="cartoon"] .sec-title::before, html[data-theme="8bit"] .sec-title::before { width: 8px; }
+
+/* tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.tile { background: var(--tile); border: 1px solid var(--border); border-radius: calc(var(--radius) * .65); padding: 10px 12px; min-width: 0; }
+html[data-theme="8bit"] .tile { border-radius: 0; }
+.tile span { display: block; font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.tile b { font-family: var(--mono); font-size: 12.5px; font-weight: 600; word-break: break-all; line-height: 1.35; }
+
+/* detail rows */
+.detail { display: flex; justify-content: space-between; gap: 14px; padding: 8px 2px; border-bottom: 1px dashed var(--border); font-size: 13px; }
+.detail:last-child { border-bottom: none; }
+.detail span { color: var(--muted); flex: none; }
+.detail b { font-family: var(--mono); font-weight: 600; text-align: right; word-break: break-word; }
+
+/* bars */
+.bar { height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; }
+html[data-theme="8bit"] .bar { border-radius: 0; height: 14px; }
+.bar-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .8s ease, background .4s; }
+html[data-theme="8bit"] .bar-fill { border-radius: 0; }
+.bar-row { margin-bottom: 14px; }
+.bar-row .lbl { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+.bar-row .lbl b { font-family: var(--mono); font-weight: 600; }
+.bar-row .lbl span { color: var(--muted); font-family: var(--mono); }
+
+/* storage cards */
+.storage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.storage-card { border: 1px solid var(--border); border-radius: calc(var(--radius) * .7); padding: 14px; background: var(--tile); }
+html[data-theme="8bit"] .storage-card { border-radius: 0; }
+.storage-card .mt { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.storage-card .mt b { font-family: var(--mono); font-size: 13.5px; }
+.badge { font-size: 10px; font-family: var(--mono); padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); letter-spacing: 1px; }
+html[data-theme="8bit"] .badge { border-radius: 0; }
+
+/* chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-family: var(--mono); font-size: 12.5px; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--tile); display: inline-flex; gap: 8px; align-items: center;
+}
+html[data-theme="8bit"] .chip { border-radius: 0; }
+.chip b { font-variant-numeric: tabular-nums; }
+.chip .unit { color: var(--muted); font-size: 11px; }
+.chip.good b { color: var(--good); }
+.chip.warn b { color: var(--warn); }
+.chip.bad b { color: var(--bad); }
+
+/* tables */
+.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tbl th { text-align: left; font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.tbl td { padding: 7px 8px; border-bottom: 1px solid var(--border); font-family: var(--mono); }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* network iface cards */
+.net-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.iface { border: 1px solid var(--border); border-radius: calc(var(--radius) * .7); padding: 14px; background: var(--tile); }
+html[data-theme="8bit"] .iface { border-radius: 0; }
+.iface .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.iface .hd b { font-family: var(--mono); font-size: 14px; }
+.iface .hd .st { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-left: auto; }
+.ip-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+.ip-list code { font-family: var(--mono); font-size: 12px; color: var(--accent); word-break: break-all; }
+.ip-list .scope { color: var(--muted); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+.iface .flow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.iface .flow .dir { padding: 8px 10px; }
+.iface .flow .dir b { font-size: 15px; }
+.meta-line { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 8px; }
+
+/* connectivity */
+.conn { display: flex; flex-direction: column; gap: 12px; }
+.conn .row { display: flex; align-items: center; gap: 10px; font-size: 13px; flex-wrap: wrap; }
+.conn .row .k { color: var(--muted); font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase; width: 92px; flex: none; }
+.qr-wrap { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+.qr-wrap img { image-rendering: pixelated; border: 1px solid var(--border); border-radius: 8px; background: #fff; width: 96px; height: 96px; }
+.copy-btn {
+  border: 1px solid var(--border); background: var(--tile); color: var(--text);
+  padding: 6px 12px; border-radius: 999px; font-family: var(--mono); font-size: 12px; cursor: pointer;
+}
+html[data-theme="8bit"] .copy-btn { border-radius: 0; border-width: 3px; border-color: #000; box-shadow: 3px 3px 0 #000; }
+.copy-btn:hover { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+
+/* footer */
+.footer { text-align: center; color: var(--muted); font-size: 12px; padding: 8px 0 26px; line-height: 1.8; }
+.footer b { color: var(--text); }
+.footer .mono { font-family: var(--mono); }
+
+.noscript { position: fixed; inset: 0; display: grid; place-items: center; background: #070b14; color: #e5e7eb; font-family: monospace; z-index: 999; }
+
+/* responsive */
+@media (max-width: 720px) {
+  .topbar { padding: 10px 14px; gap: 10px 14px; }
+  .host-clock { order: 3; width: 100%; flex-direction: row; align-items: center; justify-content: space-between; }
+  .hostname { max-width: 60vw; }
+  .brand h1 { letter-spacing: 3px; font-size: 17px; }
+  main { padding: 14px; gap: 14px; }
+  .hero { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+  .ring-wrap { width: 100px; height: 100px; }
+  .tiles { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+}
+@media (max-width: 420px) {
+  .themes { width: 100%; justify-content: flex-start; }
+}
+</style>
+</head>
+<body>
+<noscript><div class="noscript">4eleven needs JavaScript to render. Please enable it.</div></noscript>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">411</div>
+    <div>
+      <h1>4ELEVEN</h1>
+      <div class="tagline">the information line</div>
+    </div>
+  </div>
+  <div class="host-clock">
+    <div class="live"><span id="live-dot" class="live-dot idle"></span><span id="status-text">connecting</span></div>
+    <div id="hostname-big" class="hostname">—</div>
+    <div id="clock" class="clock">--:--:--</div>
+  </div>
+  <nav class="themes" id="themes" aria-label="Theme">
+    <button class="tbtn" data-theme="dark">🌙 Dark</button>
+    <button class="tbtn" data-theme="light">☀️ Light</button>
+    <button class="tbtn" data-theme="cartoon">🎨 Cartoon</button>
+    <button class="tbtn" data-theme="futuristic">🤖 Futuristic</button>
+    <button class="tbtn" data-theme="8bit">👾 8-Bit</button>
+  </nav>
+</header>
+
+<main>
+  <!-- hero metrics -->
+  <section class="hero">
+    <article class="card">
+      <div class="card-head"><h3>🧠 CPU</h3><span id="cpu-model-short" class="sub">—</span></div>
+      <div class="hero-body">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="11"/>
+            <circle class="ring-fg" id="cpu-ring" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+          </svg>
+          <div class="ring-center"><b id="cpu-pct">–</b><small>%</small></div>
+        </div>
+        <div class="hero-info">
+          <div class="stat-row"><span>Cores / Threads</span><b id="cpu-cores">–</b></div>
+          <div class="stat-row"><span>Load (1/5/15)</span><b id="cpu-load">–</b></div>
+          <div class="stat-row"><span>Clock</span><b id="cpu-freq">–</b></div>
+          <canvas id="spark-cpu" class="spark"></canvas>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h3>💾 Memory</h3><span id="mem-detail" class="sub">—</span></div>
+      <div class="hero-body">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="11"/>
+            <circle class="ring-fg" id="mem-ring" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+          </svg>
+          <div class="ring-center"><b id="mem-pct">–</b><small>%</small></div>
+        </div>
+        <div class="hero-info">
+          <div class="stat-row"><span>Used</span><b id="mem-used">–</b></div>
+          <div class="stat-row"><span>Available</span><b id="mem-avail">–</b></div>
+          <div class="stat-row"><span>Swap</span><b id="mem-swap">–</b></div>
+          <canvas id="spark-mem" class="spark"></canvas>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h3>🗄️ Storage</h3><span id="disk-detail" class="sub">—</span></div>
+      <div class="hero-body">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="11"/>
+            <circle class="ring-fg" id="disk-ring" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+          </svg>
+          <div class="ring-center"><b id="disk-pct">–</b><small>%</small></div>
+        </div>
+        <div class="hero-info">
+          <div class="stat-row"><span>Used</span><b id="disk-used">–</b></div>
+          <div class="stat-row"><span>Total</span><b id="disk-total">–</b></div>
+          <div class="stat-row"><span>Mounts</span><b id="disk-mounts">–</b></div>
+          <canvas id="spark-disk" class="spark"></canvas>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h3>🌐 Network</h3><span id="net-total" class="sub">—</span></div>
+      <div class="net-hero">
+        <div class="flow">
+          <div class="dir dn"><span>▼ Download</span><b id="net-rx">–</b></div>
+          <div class="dir up"><span>▲ Upload</span><b id="net-tx">–</b></div>
+        </div>
+        <canvas id="spark-rx" class="spark"></canvas>
+        <canvas id="spark-tx" class="spark"></canvas>
+      </div>
+    </article>
+  </section>
+
+  <!-- system -->
+  <section class="card">
+    <h3 class="sec-title">🖥️ System</h3>
+    <div class="tiles" id="sys-tiles"><div class="tile"><span>loading</span><b>…</b></div></div>
+  </section>
+
+  <!-- hardware + temps -->
+  <section class="grid">
+    <article class="card">
+      <h3 class="sec-title">🧩 Hardware</h3>
+      <div class="detail"><span>CPU model</span><b id="cpu-model">–</b></div>
+      <div class="detail"><span>Vendor</span><b id="cpu-vendor">–</b></div>
+      <div class="detail"><span>Sockets / Cores / Threads</span><b id="cpu-ct">–</b></div>
+      <div class="detail"><span>Base clock</span><b id="cpu-clock">–</b></div>
+      <div class="detail"><span>Cache</span><b id="cpu-cache">–</b></div>
+      <div class="detail"><span>CPU flags</span><b id="cpu-flags">–</b></div>
+      <div class="detail"><span>Motherboard</span><b id="hw-board">–</b></div>
+      <div class="detail"><span>System</span><b id="hw-sys">–</b></div>
+      <div class="detail"><span>BIOS</span><b id="hw-bios">–</b></div>
+      <div class="detail"><span>GPU</span><b id="hw-gpu">–</b></div>
+    </article>
+    <article class="card">
+      <h3 class="sec-title">🌡️ Temperatures</h3>
+      <div class="chips" id="temps"><div class="tile"><span>reading</span><b>…</b></div></div>
+    </article>
+  </section>
+
+  <!-- storage + disks -->
+  <section class="grid">
+    <article class="card">
+      <h3 class="sec-title">🗄️ Filesystems</h3>
+      <div class="storage-grid" id="storage-cards"></div>
+    </article>
+    <article class="card">
+      <h3 class="sec-title">💽 Physical Disks</h3>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>Device</th><th>Model</th><th>Size</th><th>Type</th></tr></thead>
+          <tbody id="disks-tbody"></tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+
+  <!-- network + connectivity -->
+  <section class="grid">
+    <article class="card">
+      <h3 class="sec-title">📡 Interfaces</h3>
+      <div class="net-cards" id="net-cards"></div>
+    </article>
+    <article class="card">
+      <h3 class="sec-title">🔌 Connectivity</h3>
+      <div class="conn">
+        <div class="row"><span class="k">Gateway</span><span id="gw-list" class="mono">—</span></div>
+        <div class="row"><span class="k">DNS servers</span><span id="dns-list" class="mono">—</span></div>
+        <div class="row"><span class="k">Search dom.</span><span id="dns-search" class="mono">—</span></div>
+        <div class="row"><span class="k">Public IP</span><span id="public-ip" class="mono">—</span></div>
+        <div class="row"><span class="k">Local</span><span id="local-ip" class="mono">—</span></div>
+        <div class="qr-wrap">
+          <img id="qr-img" alt="QR code to open this dashboard on your phone" style="display:none">
+          <div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px">📱 Scan to open on mobile</div>
+            <button class="copy-btn" id="copy-url">⧉ Copy dashboard URL</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- processes -->
+  <section class="card">
+    <h3 class="sec-title">⚙️ Top Processes <span style="margin-left:auto;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:none">cpu% is per-core · refreshes every 2s</span></h3>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>PID</th><th>Process</th><th class="num">CPU %</th><th class="num">MEM %</th></tr></thead>
+        <tbody id="procs-tbody"><tr><td colspan="4" style="color:var(--muted)">collecting…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <b>4ELEVEN</b> v<span id="footer-ver">–</span> · the information line · 411 = information 📞<br>
+    serving <span id="footer-host" class="mono">—</span> · live refresh every 2s · switch themes with the buttons above
+  </footer>
+</main>
+
+<script>
+"use strict";
+/* ================= state ================= */
+const $ = (id) => document.getElementById(id);
+let S = null;                    // latest server payload
+let boot = 0;
+const MAX = 60;                  // history points
+const hist = { cpu: [], mem: [], disk: [], rx: [], tx: [] };
+const ifaceRates = {};           // name -> {rx: el, tx: el}
+let offline = false;
+
+/* ================= formatting ================= */
+const fmtBytes = (n) => {
+  if (n == null || isNaN(n)) return "—";
+  if (n < 1024) return n + " B";
+  const u = ["KB", "MB", "GB", "TB", "PB"];
+  let i = -1;
+  do { n /= 1024; i++; } while (n >= 1024 && i < u.length - 1);
+  return n.toFixed(n >= 100 ? 0 : 1) + " " + u[i];
+};
+const fmtRate = (n) => (n == null ? "—" : fmtBytes(n) + "/s");
+const fmtUptime = (s) => {
+  if (!s && s !== 0) return "—";
+  s = Math.floor(s);
+  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600),
+        m = Math.floor((s % 3600) / 60), sec = s % 60;
+  if (d > 0) return `${d}d ${h}h ${m}m`;
+  if (h > 0) return `${h}h ${m}m ${sec}s`;
+  if (m > 0) return `${m}m ${sec}s`;
+  return `${sec}s`;
+};
+const pctColor = (p) => (p >= 85 ? cssVar("--bad") : p >= 65 ? cssVar("--warn") : cssVar("--good"));
+const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ================= theme ================= */
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  localStorage.setItem("4eleven-theme", t);
+  document.querySelectorAll(".tbtn").forEach((b) => b.classList.toggle("active", b.dataset.theme === t));
+}
+(function initTheme() {
+  const q = new URLSearchParams(location.search).get("theme");
+  const saved = localStorage.getItem("4eleven-theme");
+  const pref = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  applyTheme(q || saved || pref);
+  document.getElementById("themes").addEventListener("click", (e) => {
+    const b = e.target.closest(".tbtn");
+    if (b) applyTheme(b.dataset.theme);
+  });
+})();
+
+/* ================= canvas sparklines ================= */
+function spark(canvas, data, color) {
+  const w = canvas.clientWidth || 120, h = canvas.clientHeight || 42;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+  if (data.length < 2) return;
+  const max = Math.max(...data, 1);
+  const px = (i) => (i / (MAX - 1)) * w;
+  const py = (v) => h - 5 - (v / max) * (h - 12);
+  const pixel = document.documentElement.dataset.theme === "8bit";
+  ctx.beginPath();
+  if (pixel) {
+    // blocky stepped line — the 8-bit way
+    let prevY = py(data[0]);
+    ctx.moveTo(px(0), prevY);
+    for (let i = 1; i < data.length; i++) {
+      const x = px(i), y = py(data[i]);
+      ctx.lineTo(x, prevY);
+      ctx.lineTo(x, y);
+      prevY = y;
+    }
+  } else {
+    ctx.moveTo(px(0), py(data[0]));
+    for (let i = 1; i < data.length; i++) ctx.lineTo(px(i), py(data[i]));
+  }
+  ctx.strokeStyle = color;
+  ctx.lineWidth = pixel ? 2.5 : 2;
+  ctx.lineJoin = pixel ? "miter" : "round";
+  ctx.lineCap = "round";
+  ctx.stroke();
+  ctx.lineTo(px(data.length - 1), h); ctx.lineTo(px(0), h); ctx.closePath();
+  ctx.fillStyle = color + (pixel ? "28" : "22");
+  ctx.fill();
+}
+function push(hist, v) { hist.push(v); if (hist.length > MAX) hist.shift(); }
+
+/* ================= ring gauge ================= */
+const RING_C = 326.7;
+function ring(el, pct, color) {
+  if (pct == null || isNaN(pct)) pct = 0;
+  const pixel = document.documentElement.dataset.theme === "8bit";
+  el.style.strokeDasharray = pixel ? "4 3" : RING_C;
+  el.style.strokeDashoffset = RING_C * (1 - Math.max(0, Math.min(100, pct)) / 100);
+  el.style.stroke = color;
+}
+
+/* ================= static render (once) ================= */
+function localIps(net) {
+  const out = [];
+  for (const i of net.interfaces)
+    for (const ip of i.ips) if (ip.family === 4 && ip.scope === "global") out.push(ip.addr);
+  return out.length ? out.join(", ") : "—";
+}
+function renderStatic() {
+  const s = S.server, n = s.network;
+
+  // hero labels
+  $("cpu-model-short").textContent = (s.cpu.model || "—").slice(0, 34);
+  $("cpu-cores").textContent = `${s.cpu.physical_cores} / ${s.cpu.logical}`;
+  $("disk-detail").textContent = `${s.storage.length} mount${s.storage.length === 1 ? "" : "s"}`;
+  $("net-total").textContent = `${n.interfaces.length} interface${n.interfaces.length === 1 ? "" : "s"}`;
+
+  // system tiles
+  const tiles = [
+    ["OS", s.os], ["Kernel", s.kernel], ["Architecture", s.arch],
+    ["Hostname", s.hostname], ["FQDN", s.fqdn], ["Uptime", fmtUptime(s.uptime)],
+    ["Boot time", new Date(s.boot_time * 1000).toLocaleString()],
+    ["Python", s.python], ["Virtualization", s.virtualization],
+    ["Processes", s.processes], ["Public IP", n.public_ip || "—"],
+    ["Local IPs", localIps(n)],
+  ];
+  $("sys-tiles").innerHTML = "";
+  for (const [k, v] of tiles) {
+    const el = document.createElement("div");
+    el.className = "tile";
+    const span = document.createElement("span"); span.textContent = k;
+    const b = document.createElement("b"); b.textContent = v;
+    el.append(span, b);
+    $("sys-tiles").appendChild(el);
+  }
+
+  // hardware detail
+  $("cpu-model").textContent = s.cpu.model || "—";
+  $("cpu-vendor").textContent = s.cpu.vendor || "—";
+  $("cpu-ct").textContent = `${s.cpu.sockets} / ${s.cpu.physical_cores} / ${s.cpu.logical}`;
+  $("cpu-clock").textContent = s.cpu.base_mhz ? s.cpu.base_mhz + " MHz" : "—";
+  $("cpu-cache").textContent = s.cpu.cache || "—";
+  $("cpu-flags").textContent = s.cpu.flags_count ? s.cpu.flags_count + " flags" : "—";
+  const hw = s.hardware || {};
+  $("hw-board").textContent = [hw.board_vendor, hw.board_name, hw.board_version].filter(Boolean).join(" ") || "—";
+  $("hw-sys").textContent = [hw.sys_vendor, hw.product_name, hw.product_version].filter(Boolean).join(" ") || "—";
+  $("hw-bios").textContent = [hw.bios_vendor, hw.bios_version].filter(Boolean).join(" ") || "—";
+  $("hw-gpu").textContent = s.gpu.length ? s.gpu.join(" · ") : "—";
+
+  // temps
+  $("temps").innerHTML = "";
+  if (!s.temps.length) {
+    $("temps").innerHTML = '<div class="tile"><span>no sensors</span><b>—</b></div>';
+  } else {
+    for (const t of s.temps) {
+      const cls = t.crit && t.value >= t.crit * 0.9 ? "bad" : t.value >= 70 ? "warn" : "good";
+      const el = document.createElement("div");
+      el.className = "chip " + cls;
+      el.innerHTML = `<span style="color:var(--muted)">${t.label}</span><b>${t.value}°C</b>`;
+      $("temps").appendChild(el);
+    }
+  }
+
+  // filesystems
+  $("storage-cards").innerHTML = "";
+  if (!s.storage.length) {
+    $("storage-cards").innerHTML = '<div class="tile"><span>none</span><b>—</b></div>';
+  }
+  for (const m of s.storage) {
+    const card = document.createElement("div");
+    card.className = "storage-card";
+    card.innerHTML = `
+      <div class="mt"><b>${m.mount}</b><span class="badge">${m.fs}</span></div>
+      <div class="bar"><div class="bar-fill" data-p="${m.percent}"></div></div>
+      <div class="lbl" style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-top:6px;color:var(--muted)">
+        <span>${fmtBytes(m.used)} / ${fmtBytes(m.total)}</span><span>${m.percent}%</span>
+      </div>`;
+    $("storage-cards").appendChild(card);
+  }
+  requestAnimationFrame(() =>
+    document.querySelectorAll("#storage-cards .bar-fill").forEach((f) => (f.style.width = f.dataset.p + "%")));
+
+  // disks table
+  $("disks-tbody").innerHTML = "";
+  for (const d of s.disks) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${d.name}</td><td>${d.model}</td><td class="num">${d.size_gb} GB</td><td><span class="badge">${d.type}</span></td>`;
+    $("disks-tbody").appendChild(tr);
+  }
+
+  // interface cards
+  $("net-cards").innerHTML = "";
+  for (const i of n.interfaces) {
+    const card = document.createElement("div");
+    card.className = "iface";
+    const ips = i.ips.length
+      ? i.ips.map((ip) => `<code>${ip.addr}</code> <span class="scope">${ip.scope}</span>`).join("<br>")
+      : '<span style="color:var(--muted);font-size:12px">no addresses</span>';
+    card.innerHTML = `
+      <div class="hd"><b>${i.name}</b>
+        <span class="st">${i.state}${i.speed_mbps ? " · " + i.speed_mbps + " Mb/s" : ""}</span></div>
+      <div class="ip-list">${ips}</div>
+      <div class="meta-line"><span>MAC ${i.mac || "—"}</span><span>MTU ${i.mtu || "—"}</span></div>
+      <div class="flow">
+        <div class="dir dn"><span>▼ rx</span><b data-rx>—</b></div>
+        <div class="dir up"><span>▲ tx</span><b data-tx>—</b></div>
+      </div>`;
+    $("net-cards").appendChild(card);
+    ifaceRates[i.name] = { rx: card.querySelector("[data-rx]"), tx: card.querySelector("[data-tx]") };
+  }
+
+  // connectivity
+  $("gw-list").textContent = n.gateways.length ? n.gateways.map((g) => `${g.ip} (${g.iface})`).join(" · ") : "—";
+  $("dns-list").textContent = n.dns.servers.length ? n.dns.servers.join(" · ") + (n.dns.stub ? " [" + n.dns.stub + "]" : "") : "—";
+  $("dns-search").textContent = n.dns.search.length ? n.dns.search.join(" ") : "—";
+  $("public-ip").textContent = n.public_ip || "—";
+  $("local-ip").textContent = localIps(n);
+
+  // QR + footer
+  const qr = $("qr-img");
+  const port = location.port ? ":" + location.port : "";
+  if (n.public_ip) {
+    qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=" +
+      encodeURIComponent("http://" + n.public_ip + port + "/");
+    qr.style.display = "block";
+  }
+  $("footer-ver").textContent = S.version;
+  $("footer-host").textContent = s.hostname;
+}
+
+/* ================= dynamic render (every tick) ================= */
+function renderDynamic() {
+  const st = S.stats, s = S.server;
+
+  // CPU
+  const cpuPct = st.cpu && st.cpu.total != null ? st.cpu.total : null;
+  $("cpu-pct").textContent = cpuPct == null ? "–" : cpuPct;
+  ring($("cpu-ring"), cpuPct == null ? 0 : cpuPct, cssVar("--accent"));
+  $("cpu-load").textContent = st.loadavg.map((x) => x.toFixed(2)).join(" / ");
+  const freq = s.cpu_freq && s.cpu_freq.current_mhz;
+  $("cpu-freq").textContent = freq ? freq + " MHz" : (s.cpu.base_mhz ? s.cpu.base_mhz + " MHz" : "—");
+
+  // Memory
+  const mp = s.memory.percent;
+  $("mem-pct").textContent = mp;
+  ring($("mem-ring"), mp, pctColor(mp));
+  $("mem-used").textContent = fmtBytes(s.memory.used);
+  $("mem-avail").textContent = fmtBytes(s.memory.available);
+  $("mem-swap").textContent = s.memory.swap_total ? `${fmtBytes(s.memory.swap_used)} / ${fmtBytes(s.memory.swap_total)}` : "none";
+  $("mem-detail").textContent = fmtBytes(s.memory.total);
+
+  // Storage aggregate
+  let tu = 0, tt = 0;
+  for (const m of s.storage) { tu += m.used; tt += m.total; }
+  const dp = tt ? (100 * tu / tt) : 0;
+  $("disk-pct").textContent = dp.toFixed(0);
+  ring($("disk-ring"), dp, pctColor(dp));
+  $("disk-used").textContent = fmtBytes(tu);
+  $("disk-total").textContent = fmtBytes(tt);
+  $("disk-mounts").textContent = s.storage.length;
+
+  // Network aggregate
+  const rx = st.net ? st.net.rx_rate : null, tx = st.net ? st.net.tx_rate : null;
+  $("net-rx").textContent = fmtRate(rx);
+  $("net-tx").textContent = fmtRate(tx);
+  for (const i of s.network.interfaces) {
+    const r = ifaceRates[i.name];
+    if (r) { r.rx.textContent = fmtRate(i.rx_rate); r.tx.textContent = fmtRate(i.tx_rate); }
+  }
+
+  // history + sparklines
+  push(hist.cpu, cpuPct == null ? 0 : cpuPct);
+  push(hist.mem, mp);
+  push(hist.disk, dp);
+  push(hist.rx, rx == null ? 0 : rx);
+  push(hist.tx, tx == null ? 0 : tx);
+  spark($("spark-cpu"), hist.cpu, cssVar("--accent"));
+  spark($("spark-mem"), hist.mem, cssVar("--accent2"));
+  spark($("spark-disk"), hist.disk, cssVar("--warn"));
+  spark($("spark-rx"), hist.rx, cssVar("--accent"));
+  spark($("spark-tx"), hist.tx, cssVar("--accent2"));
+
+  // top processes
+  $("procs-tbody").innerHTML = "";
+  for (const p of st.top) {
+    const tr = document.createElement("tr");
+    const cpu = p.cpu == null ? "—" : p.cpu;
+    const tdCpu = document.createElement("td"); tdCpu.className = "num"; tdCpu.textContent = cpu;
+    const tdMem = document.createElement("td"); tdMem.className = "num"; tdMem.textContent = p.mem;
+    tr.innerHTML = "";
+    const t1 = document.createElement("td"); t1.textContent = p.pid;
+    const t2 = document.createElement("td"); t2.textContent = p.name;
+    tr.append(t1, t2, tdCpu, tdMem);
+    $("procs-tbody").appendChild(tr);
+  }
+}
+
+/* ================= clock + uptime ================= */
+setInterval(() => {
+  $("clock").textContent = new Date().toLocaleTimeString();
+  if (boot) {
+    const up = Date.now() / 1000 - boot;
+    const tiles = document.querySelectorAll("#sys-tiles .tile b");
+    if (tiles[5]) tiles[5].textContent = fmtUptime(up);
+  }
+}, 1000);
+
+/* ================= polling loop ================= */
+async function tick() {
+  try {
+    const r = await fetch("/api/info", { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    S = await r.json();
+    boot = S.server.boot_time;
+    if (!window.__title) {
+      window.__title = true;
+      document.title = S.server.hostname + " · 4eleven";
+    }
+    if (!window.__first) { renderStatic(); window.__first = true; }
+    renderDynamic();
+    if (offline) {
+      offline = false;
+      $("live-dot").className = "live-dot";
+      $("status-text").textContent = "live";
+    }
+  } catch (e) {
+    offline = true;
+    $("live-dot").className = "live-dot off";
+    $("status-text").textContent = "offline";
+  }
+}
+tick();
+setInterval(tick, 2000);
+
+/* ================= copy url ================= */
+$("copy-url").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+  } catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = location.href; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); ta.remove();
+  }
+  const b = $("copy-url");
+  b.textContent = "✓ copied";
+  setTimeout(() => (b.textContent = "⧉ Copy dashboard URL"), 1500);
+});
+</script>
+</body>
+</html>
