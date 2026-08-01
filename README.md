@@ -122,6 +122,7 @@ sudo bash /opt/4eleven/uninstall.sh
 git clone https://github.com/MattDGTL/4eleven
 cd 4eleven
 python3 server.py --port 4110 --no-public-ip   # run in place
+bash test.sh                                   # run the verification suite
 ```
 
 ## 📜 License
