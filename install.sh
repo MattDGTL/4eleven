@@ -4,7 +4,7 @@
 #  One-command installer for the server information dashboard.
 #
 #  USAGE
-#    curl -fsSL https://raw.githubusercontent.com/<you>/4eleven/main/install.sh | sudo bash
+#    curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | sudo bash
 #    curl -fsSL .../install.sh | sudo bash -s -- --port 8080 --password hunter2
 #
 #  Run from a local checkout (bash install.sh) it installs the local files;
@@ -16,7 +16,7 @@
 set -euo pipefail
 
 VERSION="1.0.0"
-REPO_RAW="${REPO_RAW:-https://raw.githubusercontent.com/4eleven/4eleven/main}"
+REPO_RAW="${REPO_RAW:-https://raw.githubusercontent.com/MattDGTL/4eleven/main}"
 
 # ---- configurable defaults (env can override) ----
 PORT="${PORT:-4110}"
@@ -39,7 +39,7 @@ usage() {
 4eleven v$VERSION — install the server information dashboard.
 
 USAGE:
-  curl -fsSL https://raw.githubusercontent.com/<you>/4eleven/main/install.sh | sudo bash
+  curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | sudo bash
   curl -fsSL .../install.sh | sudo bash -s -- --port 8080 --password secret
 
 OPTIONS:

@@ -22,7 +22,7 @@ A **zero-dependency, one-command server information dashboard**. Deploy it on an
 
 ```bash
 # as root (creates systemd service, installs to /opt/4eleven)
-curl -fsSL https://raw.githubusercontent.com/<YOUR-USERNAME>/4eleven/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | sudo bash
 ```
 
 That's it. Open `http://<server-ip>:4110/`.
@@ -31,13 +31,13 @@ That's it. Open `http://<server-ip>:4110/`.
 
 ```bash
 # custom port + password
-curl -fsSL https://raw.githubusercontent.com/<YOUR-USERNAME>/4eleven/main/install.sh | sudo bash -s -- --port 8080 --password hunter2
+curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | sudo bash -s -- --port 8080 --password hunter2
 
 # open the firewall port too
-curl -fsSL https://raw.githubusercontent.com/<YOUR-USERNAME>/4eleven/main/install.sh | sudo bash -s -- --open-firewall
+curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | sudo bash -s -- --open-firewall
 
 # non-root install (no systemd — runs in background)
-curl -fsSL https://raw.githubusercontent.com/<YOUR-USERNAME>/4eleven/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | bash
 
 # install local checkout (dev mode)
 bash install.sh
@@ -119,7 +119,7 @@ sudo bash /opt/4eleven/uninstall.sh
 ## 🧪 Development
 
 ```bash
-git clone https://github.com/<YOUR-USERNAME>/4eleven
+git clone https://github.com/MattDGTL/4eleven
 cd 4eleven
 python3 server.py --port 4110 --no-public-ip   # run in place
 ```
