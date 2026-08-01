@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 4eleven — canonical verification. Run: bash test.sh
+# 4eleven - canonical verification. Run: bash test.sh
 # Covers: syntax, formatter algorithm, dashboard essentials, installer
 # config inheritance, live server smoke test. Exit 0 = all green.
 set -uo pipefail

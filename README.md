@@ -1,6 +1,6 @@
-# 4eleven (411) 📞 — the information line
+# 4eleven (411) 📞 - the information line
 
-A **zero-dependency, one-command server information dashboard**. Deploy it on any new server and get a gorgeous, live-updating web dashboard showing system specs, hardware, OS, network, DNS, storage, temps and top processes — with **5 built-in themes**.
+A zero-dependency, one-command server information dashboard. Deploy it on any new server and get a clean, live-updating web dashboard showing system specs, hardware, OS, network, DNS, storage, temps and top processes, with 5 built-in themes.
 
 > **411** = *information*. One number for everything you need to know about a box.
 
@@ -8,15 +8,15 @@ A **zero-dependency, one-command server information dashboard**. Deploy it on an
 
 ## ✨ Features
 
-- 🚀 **One-command install** — pipe a single curl to bash, done
-- 🐍 **Zero dependencies** — pure Python 3 stdlib + vanilla HTML/JS, no pip, no npm, no apt packages
-- 📊 **Live metrics** — CPU per-core usage, memory, swap, network throughput, top processes (2s refresh)
-- 🧰 **Deep system info** — OS, kernel, motherboard/BIOS (DMI), CPU model/flags, disks with models, temperatures, GPU, virtualization/container detection
-- 🌐 **Full network picture** — per-interface IPs (v4+v6), MAC, MTU, link speed, gateway, DNS servers, public IP
-- 🎨 **5 themes** — 🌙 Dark, ☀️ Light, 🎨 Cartoon, 🤖 Futuristic, 👾 8-bit — switch live, remembered per browser
-- 📱 **Fully responsive** — phone/tablet/desktop, plus a QR code for instant mobile access
+- 🚀 **One-command install** - pipe a single curl to bash, done
+- 🐍 **Zero dependencies** - pure Python 3 stdlib + vanilla HTML/JS, no pip, no npm, no apt packages
+- 📊 **Live metrics** - CPU per-core usage, memory, swap, network throughput, top processes (2s refresh)
+- 🧰 **Deep system info** - OS, kernel, motherboard/BIOS (DMI), CPU model/flags, disks with models, temperatures, GPU, virtualization/container detection
+- 🌐 **Full network info** - per-interface IPs (v4+v6), MAC, MTU, link speed, gateway, DNS servers, public IP
+- 🎨 **5 themes** - 🌙 Dark, ☀️ Light, 🎨 Cartoon, 🤖 Futuristic, 👾 8-bit - switch live, remembered per browser
+- 📱 **Fully responsive** - phone/tablet/desktop, plus a QR code for instant mobile access
 - 🔒 **Optional token auth**, systemd service with auto-restart, sane defaults
-- 🏝️ **Works offline** — no CDNs, no external fonts, no telemetry. The only external call is the optional public-IP lookup (disable with `--no-public-ip`)
+- 🏝️ **Works offline** - no CDNs, no external fonts, no telemetry. The only external call is the optional public-IP lookup (disable with `--no-public-ip`)
 
 ## 🚀 Quick Install
 
@@ -36,7 +36,7 @@ curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | 
 # open the firewall port too
 curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | sudo bash -s -- --open-firewall
 
-# non-root install (no systemd — runs in background)
+# non-root install (no systemd - runs in background)
 curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | bash
 
 # install local checkout (dev mode)
@@ -58,7 +58,7 @@ Environment overrides: `REPO_RAW`, `PORT`, `HOST`, `PASSWORD`, `DEST`, `OPEN_FIR
 
 ## 🎨 Themes
 
-Switch themes live from the header — your choice is remembered per browser (`?theme=cartoon` also works).
+Switch themes live from the header - your choice is remembered per browser (`?theme=cartoon` also works).
 
 | Theme | Vibe |
 |---|---|
@@ -73,7 +73,7 @@ Switch themes live from the header — your choice is remembered per browser (`?
 
 ## 🔌 API
 
-The dashboard is a thin client over a tiny JSON API — poll it from anything:
+The dashboard is a thin client over a tiny JSON API - poll it from anything:
 
 ```bash
 curl -s http://localhost:4110/api/info | jq '.server.os, .stats.cpu.total'
@@ -85,7 +85,7 @@ curl -s http://localhost:4110/api/info | jq '.server.os, .stats.cpu.total'
 |---|---|
 | `/` | the dashboard |
 | `/api/info` | full system snapshot (static info + live stats) |
-| `/healthz` | `{"status":"ok",...}` — for uptime checks |
+| `/healthz` | `{"status":"ok",...}` - for uptime checks |
 | `/favicon.ico` | inline SVG favicon |
 
 ## 🛠 What it collects (all local, no telemetry)

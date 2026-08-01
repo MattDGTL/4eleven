@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>4eleven — Server Information</title>
+<title>4eleven - Server Information</title>
 <link rel="icon" href="/favicon.ico">
 <style>
 /* ============================================================
-   4eleven (411) — the information line
+   4eleven (411) - the information line
    Zero-dependency dashboard. Themes via CSS custom properties.
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; }
@@ -404,7 +404,7 @@ html[data-theme="8bit"] .mini-btn { border-radius: 0; border-width: 3px; border-
   </div>
   <div class="host-clock">
     <div class="live"><span id="live-dot" class="live-dot idle"></span><span id="status-text">connecting</span></div>
-    <div id="hostname-big" class="hostname">—</div>
+    <div id="hostname-big" class="hostname">-</div>
     <div id="clock" class="clock">--:--:--</div>
   </div>
   <nav class="themes" id="themes" aria-label="Theme">
@@ -420,68 +420,68 @@ html[data-theme="8bit"] .mini-btn { border-radius: 0; border-width: 3px; border-
   <!-- hero metrics -->
   <section class="hero">
     <article class="card">
-      <div class="card-head"><h3>🧠 CPU</h3><span id="cpu-model-short" class="sub">—</span></div>
+      <div class="card-head"><h3>🧠 CPU</h3><span id="cpu-model-short" class="sub">-</span></div>
       <div class="hero-body">
         <div class="ring-wrap">
           <svg viewBox="0 0 120 120">
             <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="11"/>
             <circle class="ring-fg" id="cpu-ring" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
           </svg>
-          <div class="ring-center"><b id="cpu-pct">–</b><small>%</small></div>
+          <div class="ring-center"><b id="cpu-pct">-</b><small>%</small></div>
         </div>
         <div class="hero-info">
-          <div class="stat-row"><span>Cores / Threads</span><b id="cpu-cores">–</b></div>
-          <div class="stat-row"><span>Load (1/5/15)</span><b id="cpu-load">–</b></div>
-          <div class="stat-row"><span>Clock</span><b id="cpu-freq">–</b></div>
+          <div class="stat-row"><span>Cores / Threads</span><b id="cpu-cores">-</b></div>
+          <div class="stat-row"><span>Load (1/5/15)</span><b id="cpu-load">-</b></div>
+          <div class="stat-row"><span>Clock</span><b id="cpu-freq">-</b></div>
           <canvas id="spark-cpu" class="spark"></canvas>
         </div>
       </div>
     </article>
 
     <article class="card">
-      <div class="card-head"><h3>💾 Memory</h3><span id="mem-detail" class="sub">—</span></div>
+      <div class="card-head"><h3>💾 Memory</h3><span id="mem-detail" class="sub">-</span></div>
       <div class="hero-body">
         <div class="ring-wrap">
           <svg viewBox="0 0 120 120">
             <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="11"/>
             <circle class="ring-fg" id="mem-ring" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
           </svg>
-          <div class="ring-center"><b id="mem-pct">–</b><small>%</small></div>
+          <div class="ring-center"><b id="mem-pct">-</b><small>%</small></div>
         </div>
         <div class="hero-info">
-          <div class="stat-row"><span>Used</span><b id="mem-used">–</b></div>
-          <div class="stat-row"><span>Available</span><b id="mem-avail">–</b></div>
-          <div class="stat-row"><span>Swap</span><b id="mem-swap">–</b></div>
+          <div class="stat-row"><span>Used</span><b id="mem-used">-</b></div>
+          <div class="stat-row"><span>Available</span><b id="mem-avail">-</b></div>
+          <div class="stat-row"><span>Swap</span><b id="mem-swap">-</b></div>
           <canvas id="spark-mem" class="spark"></canvas>
         </div>
       </div>
     </article>
 
     <article class="card">
-      <div class="card-head"><h3>🗄️ Storage</h3><span id="disk-detail" class="sub">—</span></div>
+      <div class="card-head"><h3>🗄️ Storage</h3><span id="disk-detail" class="sub">-</span></div>
       <div class="hero-body">
         <div class="ring-wrap">
           <svg viewBox="0 0 120 120">
             <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="11"/>
             <circle class="ring-fg" id="disk-ring" cx="60" cy="60" r="52" fill="none" stroke-width="11" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
           </svg>
-          <div class="ring-center"><b id="disk-pct">–</b><small>%</small></div>
+          <div class="ring-center"><b id="disk-pct">-</b><small>%</small></div>
         </div>
         <div class="hero-info">
-          <div class="stat-row"><span>Used</span><b id="disk-used">–</b></div>
-          <div class="stat-row"><span>Total</span><b id="disk-total">–</b></div>
-          <div class="stat-row"><span>Mounts</span><b id="disk-mounts">–</b></div>
+          <div class="stat-row"><span>Used</span><b id="disk-used">-</b></div>
+          <div class="stat-row"><span>Total</span><b id="disk-total">-</b></div>
+          <div class="stat-row"><span>Mounts</span><b id="disk-mounts">-</b></div>
           <canvas id="spark-disk" class="spark"></canvas>
         </div>
       </div>
     </article>
 
     <article class="card">
-      <div class="card-head"><h3>🌐 Network</h3><span id="net-total" class="sub">—</span></div>
+      <div class="card-head"><h3>🌐 Network</h3><span id="net-total" class="sub">-</span></div>
       <div class="net-hero">
         <div class="flow">
-          <div class="dir dn"><span>▼ Download</span><b id="net-rx">–</b></div>
-          <div class="dir up"><span>▲ Upload</span><b id="net-tx">–</b></div>
+          <div class="dir dn"><span>▼ Download</span><b id="net-rx">-</b></div>
+          <div class="dir up"><span>▲ Upload</span><b id="net-tx">-</b></div>
         </div>
         <canvas id="spark-rx" class="spark"></canvas>
         <canvas id="spark-tx" class="spark"></canvas>
@@ -499,16 +499,16 @@ html[data-theme="8bit"] .mini-btn { border-radius: 0; border-width: 3px; border-
   <section class="grid">
     <article class="card">
       <h3 class="sec-title">🧩 Hardware</h3>
-      <div class="detail"><span>CPU model</span><b id="cpu-model">–</b></div>
-      <div class="detail"><span>Vendor</span><b id="cpu-vendor">–</b></div>
-      <div class="detail"><span>Sockets / Cores / Threads</span><b id="cpu-ct">–</b></div>
-      <div class="detail"><span>Base clock</span><b id="cpu-clock">–</b></div>
-      <div class="detail"><span>Cache</span><b id="cpu-cache">–</b></div>
-      <div class="detail"><span>CPU flags</span><b id="cpu-flags">–</b></div>
-      <div class="detail"><span>Motherboard</span><b id="hw-board">–</b></div>
-      <div class="detail"><span>System</span><b id="hw-sys">–</b></div>
-      <div class="detail"><span>BIOS</span><b id="hw-bios">–</b></div>
-      <div class="detail"><span>GPU</span><b id="hw-gpu">–</b></div>
+      <div class="detail"><span>CPU model</span><b id="cpu-model">-</b></div>
+      <div class="detail"><span>Vendor</span><b id="cpu-vendor">-</b></div>
+      <div class="detail"><span>Sockets / Cores / Threads</span><b id="cpu-ct">-</b></div>
+      <div class="detail"><span>Base clock</span><b id="cpu-clock">-</b></div>
+      <div class="detail"><span>Cache</span><b id="cpu-cache">-</b></div>
+      <div class="detail"><span>CPU flags</span><b id="cpu-flags">-</b></div>
+      <div class="detail"><span>Motherboard</span><b id="hw-board">-</b></div>
+      <div class="detail"><span>System</span><b id="hw-sys">-</b></div>
+      <div class="detail"><span>BIOS</span><b id="hw-bios">-</b></div>
+      <div class="detail"><span>GPU</span><b id="hw-gpu">-</b></div>
     </article>
     <article class="card">
       <h3 class="sec-title">🌡️ Temperatures</h3>
@@ -542,11 +542,11 @@ html[data-theme="8bit"] .mini-btn { border-radius: 0; border-width: 3px; border-
     <article class="card">
       <h3 class="sec-title">🔌 Connectivity</h3>
       <div class="conn">
-        <div class="row"><span class="k">Gateway</span><span id="gw-list" class="mono">—</span></div>
-        <div class="row"><span class="k">DNS servers</span><span id="dns-list" class="mono">—</span></div>
-        <div class="row"><span class="k">Search dom.</span><span id="dns-search" class="mono">—</span></div>
-        <div class="row"><span class="k">Public IP</span><span id="public-ip" class="mono">—</span></div>
-        <div class="row"><span class="k">Local</span><span id="local-ip" class="mono">—</span></div>
+        <div class="row"><span class="k">Gateway</span><span id="gw-list" class="mono">-</span></div>
+        <div class="row"><span class="k">DNS servers</span><span id="dns-list" class="mono">-</span></div>
+        <div class="row"><span class="k">Search dom.</span><span id="dns-search" class="mono">-</span></div>
+        <div class="row"><span class="k">Public IP</span><span id="public-ip" class="mono">-</span></div>
+        <div class="row"><span class="k">Local</span><span id="local-ip" class="mono">-</span></div>
         <div class="qr-wrap">
           <img id="qr-img" alt="QR code to open this dashboard on your phone" style="display:none">
           <div>
@@ -570,8 +570,8 @@ html[data-theme="8bit"] .mini-btn { border-radius: 0; border-width: 3px; border-
   </section>
 
   <footer class="footer">
-    <b>4ELEVEN</b> v<span id="footer-ver">–</span> · the information line · 411 = information 📞<br>
-    serving <span id="footer-host" class="mono">—</span> · live refresh every 2s · switch themes with the buttons above
+    <b>4ELEVEN</b> v<span id="footer-ver">-</span> · the information line · 411 = information 📞<br>
+    serving <span id="footer-host" class="mono">-</span> · live refresh every 2s · switch themes with the buttons above
   </footer>
 </main>
 
@@ -588,7 +588,7 @@ let offline = false;
 
 /* ================= formatting ================= */
 const fmtBytes = (n) => {
-  if (n == null || isNaN(n)) return "—";
+  if (n == null || isNaN(n)) return "-";
   if (n < 1024) return Math.round(n) + " B";
   const u = ["KiB", "MiB", "GiB", "TiB", "PiB"];
   let i = -1;
@@ -596,9 +596,9 @@ const fmtBytes = (n) => {
   const s = n < 10 ? n.toFixed(2) : n < 100 ? n.toFixed(1) : n.toFixed(0);
   return s + " " + u[i];
 };
-const fmtRate = (n) => (n == null ? "—" : fmtBytes(n) + "/s");
+const fmtRate = (n) => (n == null ? "-" : fmtBytes(n) + "/s");
 const fmtUptime = (s) => {
-  if (!s && s !== 0) return "—";
+  if (!s && s !== 0) return "-";
   s = Math.floor(s);
   const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600),
         m = Math.floor((s % 3600) / 60), sec = s % 60;
@@ -642,7 +642,7 @@ function spark(canvas, data, color) {
   const pixel = document.documentElement.dataset.theme === "8bit";
   ctx.beginPath();
   if (pixel) {
-    // blocky stepped line — the 8-bit way
+    // blocky stepped line - the 8-bit way
     let prevY = py(data[0]);
     ctx.moveTo(px(0), prevY);
     for (let i = 1; i < data.length; i++) {
@@ -681,13 +681,13 @@ function localIps(net) {
   const out = [];
   for (const i of net.interfaces)
     for (const ip of i.ips) if (ip.family === 4 && ip.scope === "global") out.push(ip.addr);
-  return out.length ? out.join(", ") : "—";
+  return out.length ? out.join(", ") : "-";
 }
 function renderStatic() {
   const s = S.server, n = s.network;
 
   // hero labels
-  $("cpu-model-short").textContent = (s.cpu.model || "—").slice(0, 34);
+  $("cpu-model-short").textContent = (s.cpu.model || "-").slice(0, 34);
   $("cpu-cores").textContent = `${s.cpu.physical_cores} / ${s.cpu.logical}`;
   $("disk-detail").textContent = `${s.storage.length} mount${s.storage.length === 1 ? "" : "s"}`;
   $("net-total").textContent = `${n.interfaces.length} interface${n.interfaces.length === 1 ? "" : "s"}`;
@@ -698,7 +698,7 @@ function renderStatic() {
     ["Hostname", s.hostname], ["FQDN", s.fqdn], ["Uptime", fmtUptime(s.uptime)],
     ["Boot time", new Date(s.boot_time * 1000).toLocaleString()],
     ["Python", s.python], ["Virtualization", s.virtualization],
-    ["Processes", s.processes], ["Public IP", n.public_ip || "—"],
+    ["Processes", s.processes], ["Public IP", n.public_ip || "-"],
   ];
   $("sys-tiles").innerHTML = "";
   for (const [k, v] of tiles) {
@@ -712,22 +712,22 @@ function renderStatic() {
   }
 
   // hardware detail
-  $("cpu-model").textContent = s.cpu.model || "—";
-  $("cpu-vendor").textContent = s.cpu.vendor || "—";
+  $("cpu-model").textContent = s.cpu.model || "-";
+  $("cpu-vendor").textContent = s.cpu.vendor || "-";
   $("cpu-ct").textContent = `${s.cpu.sockets} / ${s.cpu.physical_cores} / ${s.cpu.logical}`;
-  $("cpu-clock").textContent = s.cpu.base_mhz ? s.cpu.base_mhz + " MHz" : "—";
-  $("cpu-cache").textContent = s.cpu.cache || "—";
-  $("cpu-flags").textContent = s.cpu.flags_count ? s.cpu.flags_count + " flags" : "—";
+  $("cpu-clock").textContent = s.cpu.base_mhz ? s.cpu.base_mhz + " MHz" : "-";
+  $("cpu-cache").textContent = s.cpu.cache || "-";
+  $("cpu-flags").textContent = s.cpu.flags_count ? s.cpu.flags_count + " flags" : "-";
   const hw = s.hardware || {};
-  $("hw-board").textContent = [hw.board_vendor, hw.board_name, hw.board_version].filter(Boolean).join(" ") || "—";
-  $("hw-sys").textContent = [hw.sys_vendor, hw.product_name, hw.product_version].filter(Boolean).join(" ") || "—";
-  $("hw-bios").textContent = [hw.bios_vendor, hw.bios_version].filter(Boolean).join(" ") || "—";
-  $("hw-gpu").textContent = s.gpu.length ? s.gpu.join(" · ") : "—";
+  $("hw-board").textContent = [hw.board_vendor, hw.board_name, hw.board_version].filter(Boolean).join(" ") || "-";
+  $("hw-sys").textContent = [hw.sys_vendor, hw.product_name, hw.product_version].filter(Boolean).join(" ") || "-";
+  $("hw-bios").textContent = [hw.bios_vendor, hw.bios_version].filter(Boolean).join(" ") || "-";
+  $("hw-gpu").textContent = s.gpu.length ? s.gpu.join(" · ") : "-";
 
   // temps
   $("temps").innerHTML = "";
   if (!s.temps.length) {
-    $("temps").innerHTML = '<div class="tile"><span>no sensors</span><b>—</b></div>';
+    $("temps").innerHTML = '<div class="tile"><span>no sensors</span><b>-</b></div>';
   } else {
     for (const t of s.temps) {
       const cls = t.crit && t.value >= t.crit * 0.9 ? "bad" : t.value >= 70 ? "warn" : "good";
@@ -741,7 +741,7 @@ function renderStatic() {
   // filesystems
   $("storage-cards").innerHTML = "";
   if (!s.storage.length) {
-    $("storage-cards").innerHTML = '<div class="tile"><span>none</span><b>—</b></div>';
+    $("storage-cards").innerHTML = '<div class="tile"><span>none</span><b>-</b></div>';
   }
   for (const m of s.storage) {
     const card = document.createElement("div");
@@ -783,10 +783,10 @@ function renderStatic() {
       <div class="hd"><b>${i.name}</b>
         <span class="st">${i.state}${i.speed_mbps ? " · " + i.speed_mbps + " Mb/s" : ""}</span></div>
       <div class="ip-list">${ips}</div>
-      <div class="meta-line"><span>MAC ${i.mac || "—"}</span><span>MTU ${i.mtu || "—"}</span></div>
+      <div class="meta-line"><span>MAC ${i.mac || "-"}</span><span>MTU ${i.mtu || "-"}</span></div>
       <div class="flow">
-        <div class="dir dn"><span>▼ rx</span><b data-rx>—</b></div>
-        <div class="dir up"><span>▲ tx</span><b data-tx>—</b></div>
+        <div class="dir dn"><span>▼ rx</span><b data-rx>-</b></div>
+        <div class="dir up"><span>▲ tx</span><b data-tx>-</b></div>
       </div>`;
     $("net-cards").appendChild(card);
     ifaceRates[i.name] = { rx: card.querySelector("[data-rx]"), tx: card.querySelector("[data-tx]") };
@@ -806,10 +806,10 @@ function renderStatic() {
   }
 
   // connectivity
-  $("gw-list").textContent = n.gateways.length ? n.gateways.map((g) => `${g.ip} (${g.iface})`).join(" · ") : "—";
-  $("dns-list").textContent = n.dns.servers.length ? n.dns.servers.join(" · ") + (n.dns.stub ? " [" + n.dns.stub + "]" : "") : "—";
-  $("dns-search").textContent = n.dns.search.length ? n.dns.search.join(" ") : "—";
-  $("public-ip").textContent = n.public_ip || "—";
+  $("gw-list").textContent = n.gateways.length ? n.gateways.map((g) => `${g.ip} (${g.iface})`).join(" · ") : "-";
+  $("dns-list").textContent = n.dns.servers.length ? n.dns.servers.join(" · ") + (n.dns.stub ? " [" + n.dns.stub + "]" : "") : "-";
+  $("dns-search").textContent = n.dns.search.length ? n.dns.search.join(" ") : "-";
+  $("public-ip").textContent = n.public_ip || "-";
   $("local-ip").textContent = localIps(n);
 
   // QR + footer
@@ -830,11 +830,11 @@ function renderDynamic() {
 
   // CPU
   const cpuPct = st.cpu && st.cpu.total != null ? st.cpu.total : null;
-  $("cpu-pct").textContent = cpuPct == null ? "–" : cpuPct;
+  $("cpu-pct").textContent = cpuPct == null ? "-" : cpuPct;
   ring($("cpu-ring"), cpuPct == null ? 0 : cpuPct, cssVar("--accent"));
   $("cpu-load").textContent = st.loadavg.map((x) => x.toFixed(2)).join(" / ");
   const freq = s.cpu_freq && s.cpu_freq.current_mhz;
-  $("cpu-freq").textContent = freq ? freq + " MHz" : (s.cpu.base_mhz ? s.cpu.base_mhz + " MHz" : "—");
+  $("cpu-freq").textContent = freq ? freq + " MHz" : (s.cpu.base_mhz ? s.cpu.base_mhz + " MHz" : "-");
 
   // Memory
   const mp = s.memory.percent;
@@ -880,7 +880,7 @@ function renderDynamic() {
   $("procs-tbody").innerHTML = "";
   for (const p of st.top) {
     const tr = document.createElement("tr");
-    const cpu = p.cpu == null ? "—" : p.cpu;
+    const cpu = p.cpu == null ? "-" : p.cpu;
     const tdCpu = document.createElement("td"); tdCpu.className = "num"; tdCpu.textContent = cpu;
     const tdMem = document.createElement("td"); tdMem.className = "num"; tdMem.textContent = p.mem;
     tr.innerHTML = "";

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  4eleven (411) — the information line
+#  4eleven (411) - the information line
 #  One-command installer for the server information dashboard.
 #
 #  USAGE
@@ -15,7 +15,7 @@
 # =============================================================================
 set -euo pipefail
 
-VERSION="1.0.3"
+VERSION="1.0.4"
 REPO_RAW="${REPO_RAW:-https://raw.githubusercontent.com/MattDGTL/4eleven/main}"
 
 # ---- configurable defaults (env can override) ----
@@ -37,7 +37,7 @@ need_cmd() { command -v "$1" >/dev/null 2>&1 || die "required command not found:
 
 usage() {
   cat <<EOF
-4eleven v$VERSION — install the server information dashboard.
+4eleven v$VERSION - install the server information dashboard.
 
 USAGE:
   curl -fsSL https://raw.githubusercontent.com/MattDGTL/4eleven/main/install.sh | sudo bash
@@ -86,10 +86,10 @@ IS_ROOT=0; [ "$(id -u)" = 0 ] && IS_ROOT=1
 # UNINSTALL  (runs first so it can override DEST_DIR)
 # =============================================================================
 if [ "$UNINSTALL" = 1 ]; then
-  # install.sh always lives inside its install dir — uninstall THAT dir
+  # install.sh always lives inside its install dir - uninstall THAT dir
   DEST_DIR="$SCRIPT_DIR"
   if [ -d "$SCRIPT_DIR/.git" ]; then
-    die "this looks like a source checkout (has .git) — refusing. Run --uninstall from the installed copy, or use --prefix DIR --uninstall."
+    die "this looks like a source checkout (has .git) - refusing. Run --uninstall from the installed copy, or use --prefix DIR --uninstall."
   fi
   CONF_FILE="/etc/4eleven.conf"; [ "$IS_ROOT" = 1 ] || CONF_FILE="$DEST_DIR/4eleven.conf"
   log "uninstalling 4eleven from $DEST_DIR..."
@@ -122,7 +122,7 @@ CONF_FILE="/etc/4eleven.conf"; [ "$IS_ROOT" = 1 ] || CONF_FILE="$DEST_DIR/4eleve
 # =============================================================================
 if ! command -v python3 >/dev/null 2>&1; then
   if [ "$AUTO_PYTHON" = 1 ] && [ "$IS_ROOT" = 1 ]; then
-    log "python3 not found — installing..."
+    log "python3 not found - installing..."
     if command -v apt-get >/dev/null 2>&1; then apt-get update -qq && apt-get install -y -qq python3
     elif command -v dnf >/dev/null 2>&1; then dnf install -y python3
     elif command -v yum >/dev/null 2>&1; then yum install -y python3
@@ -136,7 +136,7 @@ fi
 
 # port conflict check (best effort)
 if command -v ss >/dev/null 2>&1 && ss -tln "( sport = :$PORT )" 2>/dev/null | grep -q LISTEN; then
-  warn "port $PORT is already in use — install anyway? continuing (use --port to change it)"
+  warn "port $PORT is already in use - install anyway? continuing (use --port to change it)"
 fi
 
 # =============================================================================
@@ -154,7 +154,7 @@ install_file() { # $1 = filename, $2 = mode
     need_cmd curl
     log "downloading $name from $REPO_RAW/$name"
     curl -fsSL --connect-timeout 10 "$REPO_RAW/$name" -o "$DEST_DIR/$name" \
-      || die "failed to download $name — check REPO_RAW=$REPO_RAW"
+      || die "failed to download $name - check REPO_RAW=$REPO_RAW"
   fi
 }
 
@@ -179,7 +179,7 @@ if [ -f "$CONF_FILE" ]; then
   if [ "$HOST_SET" = 0 ] && [ -n "$OLD" ]; then HOST="$OLD"; fi
   OLD="$(sed -n 's/^4ELEVEN_PASSWORD=//p' "$CONF_FILE" | tail -1)"
   if [ "$PASSWORD_SET" = 0 ] && [ -n "$OLD" ]; then PASSWORD="$OLD"; fi
-  log "existing config found — inheriting from $CONF_FILE (explicit flags override)"
+  log "existing config found - inheriting from $CONF_FILE (explicit flags override)"
 fi
 mkdir -p "$(dirname "$CONF_FILE")"
 cat > "$CONF_FILE" <<EOF
@@ -195,12 +195,12 @@ log "config written to $CONF_FILE"
 # SERVICE / LAUNCH
 # =============================================================================
 if [ "$WANT_SERVICE" = 0 ]; then
-  log "files installed — start manually with:"
+  log "files installed - start manually with:"
   echo "    python3 $DEST_DIR/server.py --port $PORT --host $HOST"
 elif [ "$IS_ROOT" = 1 ] && command -v systemctl >/dev/null 2>&1; then
   cat > /etc/systemd/system/4eleven.service <<EOF
 [Unit]
-Description=4eleven — server information dashboard (411)
+Description=4eleven - server information dashboard (411)
 After=network-online.target
 Wants=network-online.target
 
@@ -223,7 +223,7 @@ EOF
 else
   # no systemd (or non-root): run in the background
   if [ -f "$DEST_DIR/4eleven.pid" ] && kill -0 "$(cat "$DEST_DIR/4eleven.pid")" 2>/dev/null; then
-    warn "an existing 4eleven is running (pid $(cat "$DEST_DIR/4eleven.pid")) — restarting it"
+    warn "an existing 4eleven is running (pid $(cat "$DEST_DIR/4eleven.pid")) - restarting it"
     kill "$(cat "$DEST_DIR/4eleven.pid")" 2>/dev/null || true
     sleep 1
   fi
@@ -236,7 +236,7 @@ else
   echo $! > "$DEST_DIR/4eleven.pid"
   log "started in background (pid $(cat "$DEST_DIR/4eleven.pid"))"
   if [ "$IS_ROOT" != 1 ]; then
-    warn "non-root install without systemd — not boot-persistent. Add to your shell profile or cron:"
+    warn "non-root install without systemd - not boot-persistent. Add to your shell profile or cron:"
     echo "    @reboot setsid nohup python3 $DEST_DIR/server.py >> $DEST_DIR/4eleven.log 2>&1 &"
   fi
 fi
@@ -252,7 +252,7 @@ if [ "$OPEN_FIREWALL" = 1 ] && [ "$IS_ROOT" = 1 ]; then
     firewall-cmd --reload >/dev/null 2>&1 || true
     log "firewalld: allowed $PORT/tcp"
   else
-    warn "no active firewall detected — open port $PORT/tcp yourself if needed"
+    warn "no active firewall detected - open port $PORT/tcp yourself if needed"
   fi
 fi
 
@@ -265,9 +265,9 @@ for _ in $(seq 1 15); do
   sleep 1
 done
 if [ "$READY" = 1 ]; then
-  log "4eleven v$VERSION is UP — health check passed ✅"
+  log "4eleven v$VERSION is UP - health check passed ✅"
 else
-  warn "health check not confirmed yet — inspect $DEST_DIR/4eleven.log"
+  warn "health check not confirmed yet - inspect $DEST_DIR/4eleven.log"
 fi
 
 echo

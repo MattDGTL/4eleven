@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-4eleven (411) — the information line.
+4eleven (411) - the information line.
 A zero-dependency server information dashboard.
 
-Serves a live-updating, themeable web dashboard that shows system specs,
+Serves a live-updating web dashboard with five built-in themes showing system specs,
 hardware, OS, network, DNS and more. Uses ONLY the Python 3 standard library
 so it installs on any Linux box without pip, apt packages or node.
 
@@ -35,7 +35,7 @@ import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 NAME = "4eleven"
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 PAGE_SIZE = os.sysconf("SC_PAGE_SIZE") or 4096
 HZ = os.sysconf("SC_CLK_TCK") or 100
 
@@ -299,7 +299,7 @@ def _ifname_list():
 
 
 def _ipv4_addr(ifname):
-    """ioctl SIOCGIFADDR — no `ip` command needed."""
+    """ioctl SIOCGIFADDR - no `ip` command needed."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         packed = fcntl_ioctl(s, ifname)
@@ -731,7 +731,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.split("?", 1)[0]
-        # /healthz is a liveness probe — always open (it leaks nothing)
+        # /healthz is a liveness probe - always open (it leaks nothing)
         if path == "/healthz":
             self._send(200, json.dumps({"status": "ok", "name": NAME, "version": VERSION}))
             return
@@ -770,7 +770,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    ap = argparse.ArgumentParser(description=f"{NAME} — the information line (v{VERSION})")
+    ap = argparse.ArgumentParser(description=f"{NAME} - the information line (v{VERSION})")
     ap.add_argument("--host", default=os.environ.get("4ELEVEN_HOST", "0.0.0.0"))
     ap.add_argument("--port", type=int, default=int(os.environ.get("4ELEVEN_PORT", "4110")))
     ap.add_argument("--password", default=os.environ.get("4ELEVEN_PASSWORD"))
@@ -791,7 +791,7 @@ def main():
     print(f" | |_) |  _| | |  | |_ | |_| |  _| |  \\| | | | |")
     print(f" |  _ <| |___| |__|  _||  _  | |___| |\\  | |_| |")
     print(f" |_| \\_\\_____|_____|_|  |_| |_|_____|_| \\_|____/ ")
-    print(f" {NAME} v{VERSION} — the information line")
+    print(f" {NAME} v{VERSION} - the information line")
     print(f" Listening on http://{args.host}:{port}")
     print(f" Dashboard:  http://localhost:{port}/")
     print(f" API:        http://localhost:{port}/api/info")
