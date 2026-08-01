@@ -328,7 +328,11 @@ html[data-theme="8bit"] .chip { border-radius: 0; }
 .tbl td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 /* network iface cards */
-.net-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.net-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; max-height: 480px; overflow-y: auto; padding-right: 6px; }
+.net-cards::-webkit-scrollbar { width: 8px; }
+.net-cards::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.iface.down { opacity: .55; }
+.iface.down.hide { display: none; }
 .iface { border: 1px solid var(--border); border-radius: calc(var(--radius) * .7); padding: 14px; background: var(--tile); }
 html[data-theme="8bit"] .iface { border-radius: 0; }
 .iface .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -354,6 +358,14 @@ html[data-theme="8bit"] .iface { border-radius: 0; }
 }
 html[data-theme="8bit"] .copy-btn { border-radius: 0; border-width: 3px; border-color: #000; box-shadow: 3px 3px 0 #000; }
 .copy-btn:hover { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+.mini-btn {
+  margin-left: auto; font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--muted); background: var(--tile);
+  border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; cursor: pointer;
+  transition: all .18s;
+}
+.mini-btn:hover { color: var(--accent); border-color: var(--accent); }
+html[data-theme="8bit"] .mini-btn { border-radius: 0; border-width: 3px; border-color: #000; box-shadow: 3px 3px 0 #000; }
 
 /* footer */
 .footer { text-align: center; color: var(--muted); font-size: 12px; padding: 8px 0 26px; line-height: 1.8; }
@@ -524,7 +536,7 @@ html[data-theme="8bit"] .copy-btn { border-radius: 0; border-width: 3px; border-
   <!-- network + connectivity -->
   <section class="grid">
     <article class="card">
-      <h3 class="sec-title">📡 Interfaces</h3>
+      <h3 class="sec-title">📡 Interfaces <button id="iface-toggle" class="mini-btn" hidden></button></h3>
       <div class="net-cards" id="net-cards"></div>
     </article>
     <article class="card">
@@ -753,11 +765,17 @@ function renderStatic() {
     $("disks-tbody").appendChild(tr);
   }
 
-  // interface cards
+  // interface cards (up first, down collapsible)
   $("net-cards").innerHTML = "";
-  for (const i of n.interfaces) {
+  const ifaces = [...n.interfaces].sort((a, b) => {
+    const ad = a.state === "down" ? 1 : 0, bd = b.state === "down" ? 1 : 0;
+    return ad - bd || a.name.localeCompare(b.name);
+  });
+  let downCount = 0;
+  for (const i of ifaces) {
     const card = document.createElement("div");
     card.className = "iface";
+    if (i.state === "down") { card.classList.add("down"); downCount++; }
     const ips = i.ips.length
       ? i.ips.map((ip) => `<code>${ip.addr}</code> <span class="scope">${ip.scope}</span>`).join("<br>")
       : '<span style="color:var(--muted);font-size:12px">no addresses</span>';
@@ -772,6 +790,19 @@ function renderStatic() {
       </div>`;
     $("net-cards").appendChild(card);
     ifaceRates[i.name] = { rx: card.querySelector("[data-rx]"), tx: card.querySelector("[data-tx]") };
+  }
+  // collapse down interfaces by default; toggle reveals them
+  const tgl = $("iface-toggle");
+  if (downCount) {
+    tgl.hidden = false;
+    let showing = false;
+    const downs = () => document.querySelectorAll(".iface.down");
+    downs().forEach((el) => el.classList.add("hide"));
+    const relabel = () => { tgl.textContent = showing ? `Hide down (${downCount})` : `Show all (${downCount} down)`; };
+    relabel();
+    tgl.onclick = () => { showing = !showing; downs().forEach((el) => el.classList.toggle("hide", !showing)); relabel(); };
+  } else {
+    tgl.hidden = true;
   }
 
   // connectivity

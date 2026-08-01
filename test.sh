@@ -36,6 +36,8 @@ echo "== dashboard essentials =="
 grep -q 'u = \["KiB"' dashboard.html && ok "binary units" || bad "binary units"
 grep -q 'tile.wide' dashboard.html && ok "wide tiles" || bad "wide tiles"
 grep -q 'text-overflow: ellipsis' dashboard.html && ok "overflow guard" || bad "overflow guard"
+grep -q 'id="iface-toggle"' dashboard.html && ok "interface collapse toggle" || bad "interface collapse toggle"
+grep -q 'max-height: 480px; overflow-y: auto' dashboard.html && ok "interface scroll cap" || bad "interface scroll cap"
 
 echo "== installer config inheritance =="
 bash install.sh --prefix "$T" --no-service --port 4115 --password s1 >/dev/null 2>&1

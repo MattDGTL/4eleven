@@ -35,7 +35,7 @@ import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 NAME = "4eleven"
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 PAGE_SIZE = os.sysconf("SC_PAGE_SIZE") or 4096
 HZ = os.sysconf("SC_CLK_TCK") or 100
 
