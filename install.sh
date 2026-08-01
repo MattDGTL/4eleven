@@ -15,7 +15,7 @@
 # =============================================================================
 set -euo pipefail
 
-VERSION="1.0.1"
+VERSION="1.0.2"
 REPO_RAW="${REPO_RAW:-https://raw.githubusercontent.com/MattDGTL/4eleven/main}"
 
 # ---- configurable defaults (env can override) ----

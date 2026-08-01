@@ -301,8 +301,9 @@ html[data-theme="8bit"] .bar-fill { border-radius: 0; }
 .storage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
 .storage-card { border: 1px solid var(--border); border-radius: calc(var(--radius) * .7); padding: 14px; background: var(--tile); }
 html[data-theme="8bit"] .storage-card { border-radius: 0; }
-.storage-card .mt { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.storage-card .mt b { font-family: var(--mono); font-size: 13.5px; }
+.storage-card .mt { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.storage-card .mt b { font-family: var(--mono); font-size: 13.5px; min-width: 0; word-break: break-all; line-height: 1.35; }
+.storage-card .mt .badge { flex: none; margin-top: 2px; }
 .badge { font-size: 10px; font-family: var(--mono); padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); letter-spacing: 1px; }
 html[data-theme="8bit"] .badge { border-radius: 0; }
 
@@ -686,7 +687,6 @@ function renderStatic() {
     ["Boot time", new Date(s.boot_time * 1000).toLocaleString()],
     ["Python", s.python], ["Virtualization", s.virtualization],
     ["Processes", s.processes], ["Public IP", n.public_ip || "—"],
-    ["Local IPs", localIps(n)],
   ];
   $("sys-tiles").innerHTML = "";
   for (const [k, v] of tiles) {
