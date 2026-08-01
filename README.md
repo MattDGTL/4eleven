@@ -98,6 +98,18 @@ curl -s http://localhost:4110/api/info | jq '.server.os, .stats.cpu.total'
 - **Network**: per-interface IPs (v4+v6, scoped), MAC, MTU, link speed, rx/tx rates, default gateways, DNS servers, public IP (optional external lookup, cached 5 min)
 - **Processes**: top 8 by CPU with memory share
 
+## 🔐 Security
+
+The dashboard shows full system info to anyone who can reach the port: hostname, OS and kernel, hardware details, MAC addresses, process names, and your public IP. Treat it as read-only access to the machine.
+
+- **Set a password for anything beyond your LAN**: `curl ... | sudo bash -s -- --password something-long`
+- Rate limiting is on by default (240 requests/min per IP; change with `--rate-limit N`, disable with `--rate-limit 0`)
+- Prefer `Authorization: Bearer <token>` over `?key=<token>` (the query form can show up in logs)
+- For internet exposure, put it behind a TLS reverse proxy (nginx or caddy) and set a password; the built-in server has no TLS
+- The only outbound call is the optional public-IP lookup (disable with `--no-public-ip`)
+- No CORS headers, so other websites can't read the API from a viewer's browser
+- The docs/ screenshots show a throwaway test container (hostname, MACs, LAN IPs); nothing sensitive
+
 ## 📁 Layout
 
 ```

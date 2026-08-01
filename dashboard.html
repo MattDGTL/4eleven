@@ -587,6 +587,7 @@ const ifaceRates = {};           // name -> {rx: el, tx: el}
 let offline = false;
 
 /* ================= formatting ================= */
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmtBytes = (n) => {
   if (n == null || isNaN(n)) return "-";
   if (n < 1024) return Math.round(n) + " B";
@@ -733,7 +734,7 @@ function renderStatic() {
       const cls = t.crit && t.value >= t.crit * 0.9 ? "bad" : t.value >= 70 ? "warn" : "good";
       const el = document.createElement("div");
       el.className = "chip " + cls;
-      el.innerHTML = `<span style="color:var(--muted)">${t.label}</span><b>${t.value}°C</b>`;
+      el.innerHTML = `<span style="color:var(--muted)">${esc(t.label)}</span><b>${t.value}°C</b>`;
       $("temps").appendChild(el);
     }
   }
@@ -747,7 +748,7 @@ function renderStatic() {
     const card = document.createElement("div");
     card.className = "storage-card";
     card.innerHTML = `
-      <div class="mt"><b>${m.mount}</b><span class="badge">${m.fs}</span></div>
+      <div class="mt"><b>${esc(m.mount)}</b><span class="badge">${esc(m.fs)}</span></div>
       <div class="bar"><div class="bar-fill" data-p="${m.percent}"></div></div>
       <div class="lbl" style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-top:6px;color:var(--muted)">
         <span>${fmtBytes(m.used)} / ${fmtBytes(m.total)}</span><span>${m.percent}%</span>
@@ -761,7 +762,7 @@ function renderStatic() {
   $("disks-tbody").innerHTML = "";
   for (const d of s.disks) {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${d.name}</td><td>${d.model}</td><td class="num">${fmtBytes(d.size_gb * 1e9)}</td><td><span class="badge">${d.type}</span></td>`;
+    tr.innerHTML = `<td>${esc(d.name)}</td><td>${esc(d.model)}</td><td class="num">${fmtBytes(d.size_gb * 1e9)}</td><td><span class="badge">${esc(d.type)}</span></td>`;
     $("disks-tbody").appendChild(tr);
   }
 
@@ -777,13 +778,13 @@ function renderStatic() {
     card.className = "iface";
     if (i.state === "down") { card.classList.add("down"); downCount++; }
     const ips = i.ips.length
-      ? i.ips.map((ip) => `<code>${ip.addr}</code> <span class="scope">${ip.scope}</span>`).join("<br>")
+      ? i.ips.map((ip) => `<code>${esc(ip.addr)}</code> <span class="scope">${esc(ip.scope)}</span>`).join("<br>")
       : '<span style="color:var(--muted);font-size:12px">no addresses</span>';
     card.innerHTML = `
-      <div class="hd"><b>${i.name}</b>
-        <span class="st">${i.state}${i.speed_mbps ? " · " + i.speed_mbps + " Mb/s" : ""}</span></div>
+      <div class="hd"><b>${esc(i.name)}</b>
+        <span class="st">${esc(i.state)}${i.speed_mbps ? " · " + i.speed_mbps + " Mb/s" : ""}</span></div>
       <div class="ip-list">${ips}</div>
-      <div class="meta-line"><span>MAC ${i.mac || "-"}</span><span>MTU ${i.mtu || "-"}</span></div>
+      <div class="meta-line"><span>MAC ${esc(i.mac || "-")}</span><span>MTU ${i.mtu || "-"}</span></div>
       <div class="flow">
         <div class="dir dn"><span>▼ rx</span><b data-rx>-</b></div>
         <div class="dir up"><span>▲ tx</span><b data-tx>-</b></div>

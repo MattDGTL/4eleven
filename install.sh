@@ -15,7 +15,7 @@
 # =============================================================================
 set -euo pipefail
 
-VERSION="1.0.4"
+VERSION="1.0.5"
 REPO_RAW="${REPO_RAW:-https://raw.githubusercontent.com/MattDGTL/4eleven/main}"
 
 # ---- configurable defaults (env can override) ----
@@ -298,6 +298,10 @@ echo "  Themes:     dark · light · cartoon · futuristic · 8-bit (click top-r
 echo "  Config:     $CONF_FILE"
 if [ -n "$PASSWORD" ]; then
   echo "  Auth:       use  ?key=$PASSWORD   or   Authorization: Bearer $PASSWORD"
+else
+  echo
+  warn "NO AUTH SET - anyone who can reach the port can view full system info"
+  warn "for public exposure: re-run with --password, or set 4ELEVEN_PASSWORD in $CONF_FILE"
 fi
 if [ "$IS_ROOT" = 1 ] && command -v systemctl >/dev/null 2>&1; then
   echo "  Manage:     systemctl {status|restart|stop|enable} 4eleven"

@@ -39,6 +39,25 @@ grep -q 'text-overflow: ellipsis' dashboard.html && ok "overflow guard" || bad "
 grep -q 'id="iface-toggle"' dashboard.html && ok "interface collapse toggle" || bad "interface collapse toggle"
 grep -q 'max-height: 480px; overflow-y: auto' dashboard.html && ok "interface scroll cap" || bad "interface scroll cap"
 
+echo "== security =="
+grep -q 'Content-Security-Policy' server.py && ok "CSP header set" || bad "CSP header set"
+grep -q 'X-Frame-Options' server.py && ok "X-Frame-Options header set" || bad "X-Frame-Options header set"
+grep -q 'Referrer-Policy' server.py && ok "Referrer-Policy header set" || bad "Referrer-Policy header set"
+grep -q 'class RateLimiter' server.py && ok "rate limiter present" || bad "rate limiter present"
+grep -q 'const esc = ' dashboard.html && ok "HTML escaping helper present" || bad "HTML escaping helper present"
+grep -q 'esc(m.mount)' dashboard.html && ok "escaping applied to storage mounts" || bad "escaping applied to storage mounts"
+grep -q 'esc(i.name)' dashboard.html && ok "escaping applied to interface names" || bad "escaping applied to interface names"
+
+P2=$((5300 + RANDOM % 300))
+python3 server.py --port "$P2" --no-public-ip --rate-limit 5 >"$T/srv2.log" 2>&1 &
+SRV2=$!
+up=0
+for _ in $(seq 1 15); do curl -fsS -m 1 "http://127.0.0.1:$P2/healthz" >/dev/null 2>&1 && { up=1; break; }; sleep 0.3; done
+codes=""
+for _ in $(seq 1 10); do codes="$codes $(curl -s -m 2 -o /dev/null -w '%{http_code}' "http://127.0.0.1:$P2/healthz")"; done
+kill "$SRV2" 2>/dev/null
+if echo "$codes" | grep -q 429; then ok "rate limit returns 429 when exceeded ($codes)"; else bad "rate limit returns 429 when exceeded ($codes)"; fi
+
 echo "== installer config inheritance =="
 bash install.sh --prefix "$T" --no-service --port 4115 --password s1 >/dev/null 2>&1
 bash install.sh --prefix "$T" --no-service --port 4116 >/dev/null 2>&1

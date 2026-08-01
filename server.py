@@ -32,10 +32,11 @@ import subprocess
 import sys
 import time
 import urllib.request
+from collections import deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 NAME = "4eleven"
-VERSION = "1.0.4"
+VERSION = "1.0.5"
 PAGE_SIZE = os.sysconf("SC_PAGE_SIZE") or 4096
 HZ = os.sysconf("SC_CLK_TCK") or 100
 
@@ -676,6 +677,36 @@ _net_meter = NetMeter()
 
 
 # ---------------------------------------------------------------------------
+# rate limiting (per-IP sliding window)
+# ---------------------------------------------------------------------------
+
+class RateLimiter:
+    """Per-IP sliding-window rate limit. limit <= 0 disables it."""
+
+    def __init__(self, limit, window=60.0):
+        self.limit = limit
+        self.window = window
+        self.hits = {}
+
+    def allow(self, key, now=None):
+        if self.limit <= 0:
+            return True
+        now = now or time.time()
+        q = self.hits.get(key)
+        if q is None:
+            self.hits[key] = deque([now])
+            if len(self.hits) > 10000:      # bound memory if exposed to the internet
+                self.hits.clear()
+            return True
+        while q and q[0] <= now - self.window:
+            q.popleft()
+        if len(q) >= self.limit:
+            return False
+        q.append(now)
+        return True
+
+
+# ---------------------------------------------------------------------------
 # HTTP server
 # ---------------------------------------------------------------------------
 
@@ -705,7 +736,7 @@ class Handler(BaseHTTPRequestHandler):
             cand = hdr[7:]
         return bool(cand) and hmac.compare_digest(cand, token)
 
-    def _send(self, code, body, ctype="application/json", head_only=False):
+    def _send(self, code, body, ctype="application/json", head_only=False, extra=None):
         if isinstance(body, str):
             body = body.encode("utf-8")
         self.send_response(code)
@@ -713,6 +744,15 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Content-Security-Policy",
+                         "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
+                         "img-src 'self' https://api.qrserver.com data:; connect-src 'self'; "
+                         "font-src 'self'; base-uri 'none'; form-action 'none'")
+        if extra:
+            for k, v in extra:
+                self.send_header(k, v)
         self.end_headers()
         if not head_only:
             try:
@@ -731,6 +771,10 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.split("?", 1)[0]
+        # per-IP rate limit (also throttles auth brute force)
+        if not self.server.limiter.allow(self.client_address[0]):
+            self._send(429, json.dumps({"error": "rate limited"}), extra=(("Retry-After", "30"),))
+            return
         # /healthz is a liveness probe - always open (it leaks nothing)
         if path == "/healthz":
             self._send(200, json.dumps({"status": "ok", "name": NAME, "version": VERSION}))
@@ -763,6 +807,9 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         path = self.path.split("?", 1)[0]
+        if not self.server.limiter.allow(self.client_address[0]):
+            self._send(429, "", "application/json", head_only=True)
+            return
         if path in ("/", "/index.html"):
             self._serve_dashboard(head_only=True)
         else:
@@ -774,6 +821,9 @@ def main():
     ap.add_argument("--host", default=os.environ.get("4ELEVEN_HOST", "0.0.0.0"))
     ap.add_argument("--port", type=int, default=int(os.environ.get("4ELEVEN_PORT", "4110")))
     ap.add_argument("--password", default=os.environ.get("4ELEVEN_PASSWORD"))
+    ap.add_argument("--rate-limit", type=int,
+                    default=int(os.environ.get("4ELEVEN_RATE_LIMIT", "240")),
+                    help="max requests per IP per minute (0 disables)")
     ap.add_argument("--no-public-ip", action="store_true", help="skip public IP lookup")
     args = ap.parse_args()
 
@@ -784,6 +834,7 @@ def main():
     srv.daemon_threads = True
     srv.allow_reuse_address = True
     srv.token = args.password or None
+    srv.limiter = RateLimiter(args.rate_limit)
 
     port = srv.server_address[1]
     print(f"  ____  _____ _    ____ _   _ _____ _   _ ____  ")
@@ -796,6 +847,7 @@ def main():
     print(f" Dashboard:  http://localhost:{port}/")
     print(f" API:        http://localhost:{port}/api/info")
     print(f" Auth:       {'enabled (token required)' if srv.token else 'disabled'}")
+    print(f" Rate limit: {args.rate_limit}/min per IP" if args.rate_limit > 0 else " Rate limit: disabled")
     print(" Ctrl+C to stop.")
     try:
         srv.serve_forever()
